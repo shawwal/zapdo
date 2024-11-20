@@ -37,16 +37,14 @@ const TodoList: React.FC = () => {
   const flatListRef = useRef<FlatList<Todo>>(null); // Ref for FlatList
 
   useEffect(() => {
-    // Subscribe to network status updates
     const unsubscribe = NetInfo.addEventListener((state) => {
       const connected = state.isConnected ?? false;
       setIsConnected(connected);
 
       if (connected) {
-        // If we have just regained connection, show the sync button
-        setShowSyncButton(true);
+        setShowSyncButton(true); // Show sync button when connected
       } else {
-        setShowSyncButton(false);
+        setShowSyncButton(false); // Hide sync button when disconnected
       }
     });
 
@@ -56,15 +54,7 @@ const TodoList: React.FC = () => {
   }, [setIsConnected, setShowSyncButton]);
 
   useEffect(() => {
-    // Optionally, automatically sync when todos change
-    // if (isConnected) {
-    //   syncTodosWithSupabase();
-    // }
-  }, [todos, isConnected]);
-
-  useEffect(() => {
     const showKeyboardListener = Keyboard.addListener('keyboardDidShow', () => {
-      // Scroll to the end when the keyboard is shown
       flatListRef.current?.scrollToEnd({ animated: true });
     });
 
@@ -75,21 +65,50 @@ const TodoList: React.FC = () => {
 
   const syncTodosWithSupabase = async () => {
     try {
-      // Delete all todos in Supabase
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+  
+      if (sessionError || !session) {
+        Alert.alert('Sync Error', 'User is not authenticated.');
+        return;
+      }
+  
+      const user = session.user;
+  
+      // Attach user_id to each todo
+      const todosWithUserId = todos.map((todo) => ({
+        ...todo,
+        user_id: user.id,
+      }));
+  
+      // Delete all user's todos in Supabase
       const { error: deleteError } = await supabase
         .from('todos')
         .delete()
-        .neq('id', 0);
-
+        .eq('user_id', user.id);
+  
       if (deleteError) {
         console.error('Failed to delete todos from Supabase', deleteError);
+        Alert.alert(
+          'Sync Error',
+          `Failed to delete todos: ${deleteError.message}`
+        );
         return;
       }
-
-      // Insert local todos into Supabase
-      const { data, error } = await supabase.from('todos').insert(todos);
-      if (error) {
-        console.error('Failed to insert todos into Supabase', error);
+  
+      // Upsert local todos into Supabase
+      const { error: upsertError } = await supabase
+        .from('todos')
+        .upsert(todosWithUserId);
+  
+      if (upsertError) {
+        console.error('Failed to upsert todos into Supabase', upsertError);
+        Alert.alert(
+          'Sync Error',
+          `Failed to sync todos: ${upsertError.message}`
+        );
       } else {
         Alert.alert(
           'Sync Successful',
@@ -97,10 +116,12 @@ const TodoList: React.FC = () => {
         );
         setShowSyncButton(false);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error('Error syncing todos with Supabase', e);
+      Alert.alert('Sync Error', `An error occurred: ${e.message}`);
     }
   };
+    
 
   const renderTodoItem = ({ item }: { item: Todo }) => (
     <TodoItem item={item} />

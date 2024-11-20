@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 interface Todo {
   id: string;
   text: string;
+  user_id?: string;
 }
 
 interface TodoItemProps {
