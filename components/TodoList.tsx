@@ -1,10 +1,10 @@
-// components/TodoList.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
   Alert,
   FlatList,
+  Keyboard,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { useRecoilState } from 'recoil';
@@ -34,6 +34,7 @@ const TodoList: React.FC = () => {
   const [showSyncButton, setShowSyncButton] = useRecoilState<boolean>(
     showSyncButtonState
   );
+  const flatListRef = useRef<FlatList<Todo>>(null); // Ref for FlatList
 
   useEffect(() => {
     // Subscribe to network status updates
@@ -60,6 +61,17 @@ const TodoList: React.FC = () => {
     //   syncTodosWithSupabase();
     // }
   }, [todos, isConnected]);
+
+  useEffect(() => {
+    const showKeyboardListener = Keyboard.addListener('keyboardDidShow', () => {
+      // Scroll to the end when the keyboard is shown
+      flatListRef.current?.scrollToEnd({ animated: true });
+    });
+
+    return () => {
+      showKeyboardListener.remove();
+    };
+  }, [todos]);
 
   const syncTodosWithSupabase = async () => {
     try {
@@ -101,10 +113,12 @@ const TodoList: React.FC = () => {
     >
       <Header onSync={syncTodosWithSupabase} />
       <FlatList
+        ref={flatListRef} // Attach ref to FlatList
         data={todos}
         renderItem={renderTodoItem}
         keyExtractor={(item) => item.id}
         style={styles.list}
+        showsVerticalScrollIndicator={false}
       />
       <InputField />
     </KeyboardAvoidingView>
