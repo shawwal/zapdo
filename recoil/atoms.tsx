@@ -2,10 +2,15 @@
 import { atom } from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-interface Todo {
+export interface Todo {
   id: string;
-  text: string;
-}
+  title: string;
+  completed: boolean;
+  user_id?: string;
+  created_at?: string; // Timestamp when the todo was created
+  updated_at?: string; // Timestamp when the todo was last updated
+  deleted?: boolean;   // Flag to indicate if the todo is deleted
+};
 
 const localStorageEffect = (key: any) => ({ onSet, setSelf }: { onSet: any, setSelf: any }) => {
   // Check if AsyncStorage is available

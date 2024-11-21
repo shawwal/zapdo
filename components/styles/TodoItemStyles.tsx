@@ -5,9 +5,11 @@ export const todoItemStyles = StyleSheet.create({
   todoItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 12,
     marginBottom: 8,
-    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: '#ccc'
   },
   iconButton: {
     padding: 10, // Add padding for better touch area

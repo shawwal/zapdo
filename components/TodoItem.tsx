@@ -1,17 +1,18 @@
 // components/TodoItem.tsx
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
 import { useSetRecoilState } from 'recoil';
 import { todosState } from '@/recoil/atoms';
 import { todoItemStyles as styles } from '@/components/styles/TodoItemStyles';
 import { Ionicons } from '@expo/vector-icons';
+import { View, Text } from '@/components/Themed';
+import { useTodos } from '@/hooks/useTodos';
 
 interface Todo {
   id: string;
-  text: string;
+  title: string;
   user_id?: string;
+  deleted?: boolean; // Add deleted flag to Todo type
 }
 
 interface TodoItemProps {
@@ -19,19 +20,21 @@ interface TodoItemProps {
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({ item }) => {
-  const setTodos = useSetRecoilState(todosState);
 
-  const removeTodo = (id: string) => {
-    setTodos((todos) => todos.filter((todo) => todo.id !== id));
-  };
+  // If the item is deleted, return null to render nothing
+  if (item.deleted) {
+    return null;
+  }
+
+  const { deleteTodo } = useTodos();
 
   return (
-    <ThemedView style={styles.todoItem}>
-      <ThemedText>{item.text}</ThemedText>
-      <TouchableOpacity onPress={() => removeTodo(item.id)} style={styles.iconButton}>
+    <View style={styles.todoItem}>
+      <Text>{item.title}</Text>
+      <TouchableOpacity onPress={() => deleteTodo(item.id)} style={styles.iconButton}>
         <Ionicons name="trash-outline" size={24} color="#FF6347" />
       </TouchableOpacity>
-    </ThemedView>
+    </View>
   );
 };
 
