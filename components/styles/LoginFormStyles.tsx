@@ -2,7 +2,9 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
-    padding: 12,
+    padding: 23,
+    borderRadius: 23,
+    width: '100%',
   },
   inputContainer: {
     marginBottom: 20,
