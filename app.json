@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#003366"
-      }
+      },
+      "package": "com.shawwals.zapdo"
     },
     "web": {
       "bundler": "metro",
@@ -41,6 +42,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9eb66e6d-1a2e-45bb-9bef-06569ebaca3d"
+      }
+    },
+    "owner": "shawwals"
   }
 }

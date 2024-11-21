@@ -19,6 +19,8 @@
     "build:ios": "eas build --platform ios",
     "build:ios:dev": "eas build --platform ios --profile development",
     "build:android": "eas build --platform android",
+    "build:android:apk": "eas build -p android --profile previewApk",
+    "build:android:dev": "eas build --platform android --profile development",
     "doctor": "npx expo-doctor@latest"
   },
   "jest": {
@@ -35,6 +37,7 @@
     "expo-apple-authentication": "~7.1.2",
     "expo-blur": "~14.0.1",
     "expo-constants": "~17.0.3",
+    "expo-dev-client": "~5.0.3",
     "expo-font": "~13.0.1",
     "expo-haptics": "~14.0.0",
     "expo-linking": "~7.0.3",
