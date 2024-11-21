@@ -196,8 +196,7 @@ ZapDo uses Expo's file-based routing system. You can add new screens by creating
 
 ### Debugging
 
-- **Developer Menu**: Press `d` in the terminal to open the developer menu.
-- **React Native Debugger**: You can use tools like [Flipper](https://fbflipper.com/) for debugging React Native apps.
+- **Developer Menu**: Press `j` in the terminal to open debugger.
 
 ---
 
