@@ -71,7 +71,7 @@ Before you begin, ensure you have met the following requirements:
 2. **Install Dependencies**
 
    ```bash
-   npm install
+   yarn
    ```
 
 ### Running the App
