@@ -4,13 +4,7 @@ import { TextInput, View, Text } from '@/components/Themed';
 import { Ionicons } from '@expo/vector-icons';
 import { useTodos } from '@/hooks/useTodos';
 import { todoItemStyles as styles } from '@/components/styles/TodoItemStyles';
-
-interface Todo {
-  id: string;
-  title: string;
-  user_id?: string;
-  deleted?: boolean;
-}
+import { Todo } from '@/components/types/todoTypes';
 
 interface TodoItemProps {
   item: Todo;

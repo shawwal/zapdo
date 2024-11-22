@@ -1,13 +1,10 @@
-// styles/styles.js
 import { StyleSheet, Platform } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    marginTop: Platform.OS === 'android' ? 25 : 0,
-    // borderWidth: 1,
-    // borderColor: 'red'
+    paddingTop: Platform.OS === 'ios' ? 0 : 30 ,
+    paddingHorizontal: 16,
   },
   list: {
     marginVertical: 16,

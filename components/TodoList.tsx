@@ -4,6 +4,7 @@ import {
   Platform,
   FlatList,
   Keyboard,
+  View,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { useRecoilState } from 'recoil';
@@ -17,10 +18,7 @@ import TodoItem from '@/components/TodoItem';
 import InputField from '@/components/InputField';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useTodos } from '@/hooks/useTodos';
-interface Todo {
-  id: string;
-  text: string;
-}
+import { Todo } from '@/components/types/todoTypes';
 
 const TodoList: React.FC = () => {
   const tabBarHeight = useBottomTabBarHeight();
@@ -43,7 +41,7 @@ const TodoList: React.FC = () => {
       if (connected) {
         setShowSyncButton(true); // Show sync button when connected
       } else {
-        setShowSyncButton(false); // Hide sync buttonc when disconnected
+        setShowSyncButton(false); // Hide sync button when disconnected
       }
     });
 
@@ -69,18 +67,20 @@ const TodoList: React.FC = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{ ...styles.container, marginBottom: tabBarHeight }}
+      style={{ flex: 1, marginBottom: Platform.OS === 'ios' ? tabBarHeight : 0 }}
     >
-      <Header onSync={syncTodosWithSupabase} />
-      <FlatList
-        ref={flatListRef} // Attach ref to FlatList
-        data={todos}
-        renderItem={renderTodoItem}
-        keyExtractor={(item) => item.id}
-        style={styles.list}
-        showsVerticalScrollIndicator={false}
-      />
-      <InputField />
+      <View style={styles.container}>
+        <Header onSync={syncTodosWithSupabase} />
+        <FlatList
+          ref={flatListRef} // Attach ref to FlatList
+          data={todos}
+          renderItem={renderTodoItem}
+          keyExtractor={(item) => item.id}
+          style={styles.list}
+          showsVerticalScrollIndicator={false}
+        />
+        <InputField />
+      </View>
     </KeyboardAvoidingView>
   );
 };
