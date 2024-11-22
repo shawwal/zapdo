@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import LogoutButton from '@/components/LogoutButton';
+import LocalAuthToggle from '@/components/LocalAuthToggle';
 
 export default function TabTwoScreen() {
   return (
@@ -92,6 +93,7 @@ export default function TabTwoScreen() {
           ),
         })}
       </Collapsible>
+      <LocalAuthToggle />
       <LogoutButton />
     </ParallaxScrollView>
   );

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "zapdo",
+    "name": "Zapdo",
     "slug": "zapdo",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -37,6 +37,12 @@
             "image": "./assets/images/splash-dark.png",
             "backgroundColor": "#000000"
           }
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow Zapdo to use Face ID."
         }
       ],
       "expo-sqlite"

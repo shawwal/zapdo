@@ -56,3 +56,10 @@ export const showSyncButtonState = atom<boolean>({
   default: false,
   effects: [localStorageEffect('showSyncButtonState')],
 });
+
+
+export const localAuthState = atom<boolean>({
+  key: 'localAuthState',
+  default: false,
+  effects: [localStorageEffect('localAuthState')],
+});
