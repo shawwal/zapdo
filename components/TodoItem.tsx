@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { TouchableOpacity, TextInput, View, Text } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import { TextInput, View, Text } from '@/components/Themed';
 import { Ionicons } from '@expo/vector-icons';
 import { useTodos } from '@/hooks/useTodos';
 import { todoItemStyles as styles } from '@/components/styles/TodoItemStyles';
