@@ -16,5 +16,7 @@ export const Text: React.FC<TextProps> = (props) => {
 
 export const TextInput: React.FC<TextInputProps> = (props) => {
     const theme = useTheme();
-    return <RNTextInput {...props} style={[{ color: Colors[theme].inputText }, props.style]} />;
+    // Default placeholder text colors
+    const defaultPlaceholderTextColor = theme === 'light' ? '#888' : '#bbb';
+    return <RNTextInput {...props} style={[{ color: Colors[theme].inputText }, props.style]} placeholderTextColor={defaultPlaceholderTextColor} />;
 };
