@@ -21,6 +21,9 @@
     "build:android": "eas build --platform android",
     "build:android:apk": "eas build -p android --profile previewApk",
     "build:android:dev": "eas build --platform android --profile development",
+    "submit:ios": "eas submit --platform ios",
+    "submit:android": "eas submit --platform android",
+    "check": "npx expo install --check",
     "doctor": "npx expo-doctor@latest"
   },
   "jest": {

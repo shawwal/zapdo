@@ -44,7 +44,7 @@ export default function TabLayout() {
         name="updates"
         options={{
           title: 'Updates',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="code" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="cloud" color={color} />,
         }}
       />
     </Tabs>
