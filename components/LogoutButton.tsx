@@ -1,6 +1,5 @@
-// components/LogoutButton.tsx
 import React from 'react';
-import { Button } from 'react-native';
+import { Pressable, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext'; // Adjust the import path if necessary
 
@@ -18,7 +17,27 @@ const LogoutButton: React.FC = () => {
     }
   };
 
-  return <Button title="Logout" onPress={handleLogout} />;
+  return (
+    <Pressable style={styles.button} onPress={handleLogout}>
+      <Text style={styles.buttonText}>Logout</Text>
+    </Pressable>
+  );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#FF6347', // Tomato color (you can customize this)
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
 
 export default LogoutButton;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, StyleSheet } from 'react-native';
+import { Switch, StyleSheet } from 'react-native';
 import { View, Text } from '@/components/Themed';
 import { useRecoilState } from 'recoil';
 import { localAuthState } from '@/recoil/atoms'; // Import the Recoil atom
@@ -10,8 +10,8 @@ const LocalAuthToggle: React.FC = () => {
   const [localAuth, setLocalAuth] = useRecoilState(localAuthState);
 
   // Function to toggle the `localAuthState` value
-  const toggleAuthState = () => {
-    setLocalAuth(prevState => !prevState);  // Toggle the current state
+  const toggleAuthState = (value: boolean) => {
+    setLocalAuth(value);  // Set the state to the value from the switch
   };
 
   return (
@@ -19,9 +19,9 @@ const LocalAuthToggle: React.FC = () => {
       <Text style={styles.text}>
         {localAuth ? 'Biometric Authentication is Enabled' : 'Biometric Authentication is Disabled'}
       </Text>
-      <Button
-        title={`Turn ${localAuth ? 'Off' : 'On'} Authentication`}
-        onPress={toggleAuthState}  // Toggle the state when pressed
+      <Switch
+        value={localAuth}  // Bind the switch to the state value
+        onValueChange={toggleAuthState}  // Toggle the state when the switch is toggled
       />
     </View>
   );
@@ -29,13 +29,12 @@ const LocalAuthToggle: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
   },
   text: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 15
   },
 });
 

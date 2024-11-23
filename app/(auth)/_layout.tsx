@@ -17,7 +17,6 @@ export default function AuthLayout() {
       </View>
     );
   }
-
   if (session) {
     // If the user is authenticated, redirect to the main app
     return <Redirect href="/(tabs)" />;
