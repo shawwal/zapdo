@@ -24,7 +24,7 @@ const LoginForm: React.FC = () => {
     if (error) {
       Alert.alert('Error', error.message);
     } else {
-      Alert.alert('Success');
+      Alert.alert('Success', 'Your account has been created');
     }
   };
 

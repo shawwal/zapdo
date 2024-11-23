@@ -7,10 +7,36 @@ import LogoutButton from '@/components/LogoutButton';
 import useSession from '@/hooks/useSessions';
 import UserProfile from '@/components/UserProfile';
 import AppVersionComponent from '@/components/AppVersionComponent';
+import DeleteUser from '@/components/DeleteUser';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import { useSetRecoilState } from 'recoil';
+import { todosState } from '@/recoil/atoms';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function SettingsScreen() {
   const session = useSession();
   const [loading, setLoading] = useState(true);
+  const { signOut } = useAuth();
+  const router = useRouter();
+  const setTodo = useSetRecoilState(todosState);
+
+  const cleanUp = async () => {
+    await AsyncStorage.clear();
+    setTodo([]);
+    router.replace('/(auth)');
+  }
+
+
+  const signOutAfterComplete = async () => {
+    try {
+      await signOut();
+      await cleanUp();
+      setLoading(false);
+    } catch (error) {
+      // console.error('Sign out error:', error.message);
+    }
+  };
 
   useEffect(() => {
     // Simulate a loading state with a delay
@@ -25,6 +51,8 @@ export default function SettingsScreen() {
       clearTimeout(timeout);
     };
   }, [session]); // Dependency array ensures the effect runs when session changes
+
+  const currentUserId = session?.user?.id || '';
 
   return (
     <ParallaxScrollView
@@ -53,6 +81,7 @@ export default function SettingsScreen() {
           <LocalAuthToggle />
         </View>
         <LogoutButton />
+        <DeleteUser userId={currentUserId} onDeleteComplete={signOutAfterComplete} />
         <AppVersionComponent />
       </View>
     </ParallaxScrollView>

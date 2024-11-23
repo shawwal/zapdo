@@ -69,3 +69,9 @@ export const sessionState = atom<null>({
   key: 'sessionState',
   default: null,
 });
+
+export const loadingState = atom<boolean>({
+  key: 'loadingState',
+  default: false,
+});
+
