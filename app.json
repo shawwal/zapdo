@@ -17,7 +17,11 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#003366"
       },
-      "package": "com.shawwals.zapdo"
+      "package": "com.shawwals.zapdo",
+      "permissions": [
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -55,6 +59,12 @@
         "projectId": "9eb66e6d-1a2e-45bb-9bef-06569ebaca3d"
       }
     },
-    "owner": "shawwals"
+    "owner": "shawwals",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/9eb66e6d-1a2e-45bb-9bef-06569ebaca3d"
+    }
   }
 }
