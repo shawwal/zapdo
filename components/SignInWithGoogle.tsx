@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 20,
+    marginTop: 20,
   },
   button: {
     flexDirection: 'row',

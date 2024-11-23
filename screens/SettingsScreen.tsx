@@ -6,6 +6,7 @@ import LocalAuthToggle from '@/components/LocalAuthToggle';
 import LogoutButton from '@/components/LogoutButton';
 import useSession from '@/hooks/useSessions';
 import UserProfile from '@/components/UserProfile';
+import AppVersionComponent from '@/components/AppVersionComponent';
 
 export default function SettingsScreen() {
   const session = useSession();
@@ -52,6 +53,7 @@ export default function SettingsScreen() {
           <LocalAuthToggle />
         </View>
         <LogoutButton />
+        <AppVersionComponent />
       </View>
     </ParallaxScrollView>
   );

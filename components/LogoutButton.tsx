@@ -10,16 +10,21 @@ const LogoutButton: React.FC = () => {
   const { signOut } = useAuth();
   const router = useRouter();
   const setTodo = useSetRecoilState(todosState)
+ 
+  const cleanUp = async () => {
+    await AsyncStorage.clear();
+    setTodo([]);
+    router.replace('/(auth)');
+  }
 
   const handleLogout = async () => {
     try {
       await signOut();
       // Navigate back to the login screen
-      await AsyncStorage.clear();
-      setTodo([]);
-      router.replace('/(auth)');
+      await cleanUp();
     } catch (error) {
       console.error('Error signing out:', error);
+      await cleanUp();
     }
   };
 

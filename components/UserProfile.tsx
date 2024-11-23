@@ -157,10 +157,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, loading }) => {
       <View style={styles.actions}>
         {isEditing ? (
           <Pressable onPress={handleSaveChanges} style={styles.saveButton}>
+            <Ionicons name="save" size={22} color="white" style={{marginRight: 10}} />
             <Text style={styles.buttonText}>Save Changes</Text>
           </Pressable>
         ) : (
           <Pressable onPress={() => setIsEditing(true)} style={styles.editButton}>
+            <Ionicons name="create-outline" size={22} color="white" style={{marginRight: 10}} />
             <Text style={styles.buttonText}>Edit</Text>
           </Pressable>
         )}

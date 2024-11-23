@@ -1,4 +1,5 @@
 // UserProfileStyles.ts
+import { tintColorLight } from '@/constants/Colors';
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -60,13 +61,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     marginBottom: 10,
+    flexDirection: 'row'
   },
   saveButton: {
-    backgroundColor: '#FF6347',
+    backgroundColor: tintColorLight,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
     marginBottom: 10,
+    flexDirection: 'row'
   },
   shimmerSaveButton: {
     borderRadius: 5,

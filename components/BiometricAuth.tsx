@@ -72,7 +72,7 @@ const BiometricAuth: React.FC<BiometricAuthProps> = ({ onSuccess, onFailure }) =
   if (isBiometricAvailable && !isAuthenticated) {
     return (
       <View style={styles.centerContent}>
-        <Text>Please authenticate using biometrics</Text>
+        <Text style={styles.textSpacing}>Please authenticate using biometrics</Text>
         <Button title="Authenticate with Biometrics" onPress={handleAuthentication} />
       </View>
     );
@@ -103,6 +103,9 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center'
   },
+  textSpacing: {
+    paddingVertical: 7
+  }
 });
 
 
