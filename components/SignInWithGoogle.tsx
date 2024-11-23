@@ -5,6 +5,7 @@ import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
 import { View } from '@/components/Themed';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 // Ensure auth session completes
 WebBrowser.maybeCompleteAuthSession();
@@ -24,7 +25,7 @@ interface TokenResponse {
 
 const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({ handleSession }) => {
   const theme = useColorScheme(); // Check if it's light or dark mode
-
+  const router = useRouter();
   // Function to extract tokens from URL fragment
   function getTokens(jsonResult: { url: string }) : TokenResponse {
     const url = jsonResult.url || '';

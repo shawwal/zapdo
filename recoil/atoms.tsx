@@ -63,3 +63,9 @@ export const localAuthState = atom<boolean>({
   default: false,
   effects: [localStorageEffect('localAuthState')],
 });
+
+
+export const sessionState = atom<null>({
+  key: 'sessionState',
+  default: null,
+});

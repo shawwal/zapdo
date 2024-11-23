@@ -1,19 +1,36 @@
-import { Link, Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
-
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import React, { useState, useEffect } from 'react';
+import { ActivityIndicator, StyleSheet } from 'react-native';
+import { Link, Stack, useRouter } from 'expo-router';
+import { Text, View } from '@/components/Themed';
+import { tintColorLight } from '@/constants/Colors';
 
 export default function NotFoundScreen() {
+  const [isLoading, setIsLoading] = useState(true);
+  const route = useRouter();
+  console.log('route', route)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // Delay for 2 seconds (adjust as needed)
+    
+    return () => clearTimeout(timer); // Cleanup the timer
+  }, []);
+
   return (
     <>
       <Stack.Screen options={{ title: 'Oops!' }} />
-      <ThemedView style={styles.container}>
-        <ThemedText type="title">This screen doesn't exist.</ThemedText>
-        <Link href="/" style={styles.link}>
-          <ThemedText type="link">Go to home screen!</ThemedText>
-        </Link>
-      </ThemedView>
+      <View style={styles.container}>
+        {isLoading ? (
+          <ActivityIndicator size="large" color={tintColorLight} />
+        ) : (
+          <>
+            <Text style={styles.title}>This screen doesn't exist.</Text>
+            <Link href="/" style={styles.link}>
+              <Text style={styles.linkText}>Go to home screen!</Text>
+            </Link>
+          </>
+        )}
+      </View>
     </>
   );
 }
@@ -25,8 +42,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
   link: {
     marginTop: 15,
     paddingVertical: 15,
+  },
+  linkText: {
+    fontSize: 14,
+    color: '#2e78b7',
   },
 });

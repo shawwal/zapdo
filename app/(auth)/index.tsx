@@ -1,60 +1,70 @@
-// app/(root)/(auth)/login.tsx
 import React, { useState, useCallback, useEffect } from 'react';
 import { StyleSheet, Image, Dimensions, View, Platform, ActivityIndicator } from 'react-native';
 import { Text } from '@/components/Themed';
-import { useAuth } from '@/contexts/AuthContext';
-import { Redirect } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import LoginForm from '@/components/LoginForm';
 import LoginWithApple from '@/components/LoginWithApple';
 import SignInWithGoogle from '@/components/SignInWithGoogle';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
 
 const { width } = Dimensions.get('window');
 
 export default function LoginScreen() {
-  const { session } = useAuth();
+  const { session } = useAuth();  // Assuming you use context to track session state
   const [isLoading, setIsLoading] = useState(true);
   const [retryCount, setRetryCount] = useState(0);
   const MAX_RETRIES = 5;
+  const router = useRouter();
 
   // Redirect authenticated users to the main app
   if (session) {
     return <Redirect href="/(tabs)" />;
   }
 
-  const handleSession = useCallback(async (session: any, shouldRetry = false) => {
-    if (!session) {
-      if (shouldRetry && retryCount < MAX_RETRIES) {
-        console.log(`Session is null, retrying in 1 second (Retry ${retryCount + 1}/${MAX_RETRIES})`);
-        setRetryCount(retryCount + 1);
-        setTimeout(async () => {
-          const { data: { session: newSession } } = await supabase.auth.getSession();
-          handleSession(newSession, true);
-        }, 1000);
-      } else {
-        console.log('Session is null, no more retries');
-        setIsLoading(false);
-        setRetryCount(0); // Reset retry count
+  const handleSession = useCallback(
+    async (session: any, shouldRetry = false) => {
+      if (!session) {
+        // Retry logic if session is null
+        if (shouldRetry && retryCount < MAX_RETRIES) {
+          // console.log(`Session is null, retrying in 1 second (Retry ${retryCount + 1}/${MAX_RETRIES})`);
+          setRetryCount(retryCount + 1);  // Increment retry count
+          setTimeout(async () => {
+            const { data: { session: newSession } } = await supabase.auth.getSession();
+            handleSession(newSession, true);  // Retry with shouldRetry = true
+          }, 1000);
+        } else {
+          // Stop retrying after max retries or session is null
+          // console.log('Session is null, no more retries');
+          setIsLoading(false);  // Stop loading after max retries
+          setRetryCount(0);  // Reset retry count
+        }
+        return;
       }
-      return;
-    }
 
-    setRetryCount(0); // Reset retry count on successful session retrieval
-    setIsLoading(false);
-  }, [retryCount]);
+      // Successful session, reset retry count
+      setRetryCount(0);
+      setIsLoading(false);  // Stop loading when session is available
+
+      // Handle session, proceed to authenticated user flows
+      router.push('/(tabs)');  // Redirect to tabs page
+    },
+    [retryCount, router]
+  );
 
   useEffect(() => {
     const fetchSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      handleSession(session, false); // Set shouldRetry to false
+      handleSession(session, false);  // Do not retry on initial fetch
     };
 
-    fetchSession();
+    fetchSession();  // Fetch session when component mounts
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      handleSession(session, false); // Set shouldRetry to false
+      handleSession(session, false);  // Do not retry on session change
     });
 
+    // Cleanup subscription when component unmounts
     return () => {
       subscription.unsubscribe();
     };
@@ -77,7 +87,7 @@ export default function LoginScreen() {
             <Text>or</Text>
             <View style={styles.thinBorder} />
           </View>
-          
+
           <View style={styles.socialLogin}>
             {Platform.OS === 'ios' && <LoginWithApple />}
             <SignInWithGoogle handleSession={handleSession} />

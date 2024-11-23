@@ -16,9 +16,10 @@ interface UserProfileProps {
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({ user, loading }) => {
+
   const [displayName, setDisplayName] = useState<string>(user?.user_metadata?.display_name || '');
   const [email, setEmail] = useState<string>(user?.user_metadata?.email || user?.email);
-  const [profilePicture, setProfilePicture] = useState<string | null>(user?.user_metadata?.profile_picture || null);
+  const [profilePicture, setProfilePicture] = useState<string | null>(user?.user_metadata?.picture || null);
   const [isEditing, setIsEditing] = useState(false);
 
   // Create refs for shimmer placeholders
@@ -145,6 +146,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, loading }) => {
             value={email}
             onChangeText={setEmail}
             style={styles.input}
+            editable={false}
             placeholder="Enter your email"
           />
         ) : (

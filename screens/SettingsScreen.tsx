@@ -35,24 +35,24 @@ export default function SettingsScreen() {
         />
       }
     >
-
-      {session?.user ? (
-        <View style={styles.userProfileContainer}>
-          <UserProfile user={session.user} loading={loading} />
+      <View style={styles.wrapper}>
+        {session?.user ? (
+          <View style={styles.userProfileContainer}>
+            <UserProfile user={session.user} loading={loading} />
+          </View>
+        ) : (
+          <View style={styles.noSessionContainer}>
+            <Text style={styles.noSessionText}>No user session available</Text>
+          </View>
+        )}
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Settings</Text>
         </View>
-      ) : (
-        <View style={styles.noSessionContainer}>
-          <Text style={styles.noSessionText}>No user session available</Text>
+        <View style={styles.menu}>
+          <LocalAuthToggle />
         </View>
-      )}
-
-
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Settings</Text>
+        <LogoutButton />
       </View>
-
-      <LocalAuthToggle />
-      <LogoutButton />
     </ParallaxScrollView>
   );
 }
@@ -64,6 +64,12 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  wrapper: {
+    paddingBottom: 30,
+  },
+  menu: {
+    paddingVertical: 15
   },
   headerImage: {
     color: '#808080',
