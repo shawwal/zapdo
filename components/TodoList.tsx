@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -22,17 +22,15 @@ import { Todo } from '@/components/types/todoTypes';
 
 const TodoList: React.FC = () => {
   const tabBarHeight = useBottomTabBarHeight();
-
   const { todos, syncTodosWithSupabase } = useTodos();
 
-  const [isConnected, setIsConnected] = useRecoilState<boolean>(
-    isConnectedState
-  );
-  const [showSyncButton, setShowSyncButton] = useRecoilState<boolean>(
-    showSyncButtonState
-  );
-  const flatListRef = useRef<FlatList<Todo>>(null); // Ref for FlatList
+  const [isConnected, setIsConnected] = useRecoilState<boolean>(isConnectedState);
+  const [showSyncButton, setShowSyncButton] = useRecoilState<boolean>(showSyncButtonState);
 
+  const flatListRef = useRef<FlatList<Todo>>(null); // Ref for FlatList
+  const [keyboardOpen, setKeyboardOpen] = useState(false); // Track if the keyboard is open
+
+  // Listen for network changes to show/hide sync button
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       const connected = state.isConnected ?? false;
@@ -50,15 +48,41 @@ const TodoList: React.FC = () => {
     };
   }, [setIsConnected, setShowSyncButton]);
 
+  // Scroll to the end when the keyboard opens
   useEffect(() => {
     const showKeyboardListener = Keyboard.addListener('keyboardDidShow', () => {
-      flatListRef.current?.scrollToEnd({ animated: true });
+      if (flatListRef.current) {
+        flatListRef.current.scrollToEnd({ animated: true });
+        setKeyboardOpen(true);
+      }
+    });
+
+    const hideKeyboardListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardOpen(false); // Reset state when keyboard is dismissed
     });
 
     return () => {
       showKeyboardListener.remove();
+      hideKeyboardListener.remove();
     };
-  }, [todos]);
+  }, []);
+
+  // Scroll to the bottom when new todo is added (with delay)
+  useEffect(() => {
+    // Ensure the scroll happens only when the keyboard is open
+    if (keyboardOpen) {
+      // Delay scroll to ensure the list has been updated with the new item
+      const timer = setTimeout(() => {
+        if (flatListRef.current && todos.length > 0) {
+          flatListRef.current.scrollToEnd({ animated: true });
+        }
+      }, 100); // Delay scroll by 100ms (adjust if needed)
+
+      return () => {
+        clearTimeout(timer); // Clean up timeout when component unmounts or todos change
+      };
+    }
+  }, [todos, keyboardOpen]); // Trigger on `todos` change and when keyboardOpen state changes
 
   const renderTodoItem = ({ item }: { item: Todo }) => (
     <TodoItem item={item} />
