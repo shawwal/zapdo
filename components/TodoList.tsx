@@ -1,27 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  KeyboardAvoidingView,
-  Platform,
   FlatList,
   Keyboard,
   View,
+  Platform,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   isConnectedState,
+  isEditingState,
   showSyncButtonState,
 } from '@/recoil/atoms';
 import { styles } from '@/components/styles/todoStyles';
 import Header from '@/components/Header';
 import TodoItem from '@/components/TodoItem';
 import InputField from '@/components/InputField';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useTodos } from '@/hooks/useTodos';
 import { Todo } from '@/components/types/todoTypes';
+import KeyboardAvoidingWrapper from '@/components/KeyboardAvoidingWrapper'; // Import the custom wrapper
 
 const TodoList: React.FC = () => {
-  const tabBarHeight = useBottomTabBarHeight();
   const { todos, syncTodosWithSupabase } = useTodos();
 
   const [isConnected, setIsConnected] = useRecoilState<boolean>(isConnectedState);
@@ -29,7 +28,7 @@ const TodoList: React.FC = () => {
 
   const flatListRef = useRef<FlatList<Todo>>(null); // Ref for FlatList
   const [keyboardOpen, setKeyboardOpen] = useState(false); // Track if the keyboard is open
-
+  const editing = useRecoilValue(isEditingState);
   // Listen for network changes to show/hide sync button
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
@@ -47,11 +46,10 @@ const TodoList: React.FC = () => {
       unsubscribe();
     };
   }, [setIsConnected, setShowSyncButton]);
-
   // Scroll to the end when the keyboard opens
   useEffect(() => {
     const showKeyboardListener = Keyboard.addListener('keyboardDidShow', () => {
-      if (flatListRef.current) {
+      if (flatListRef.current  && !editing) {
         flatListRef.current.scrollToEnd({ animated: true });
         setKeyboardOpen(true);
       }
@@ -69,11 +67,10 @@ const TodoList: React.FC = () => {
 
   // Scroll to the bottom when new todo is added (with delay)
   useEffect(() => {
-    // Ensure the scroll happens only when the keyboard is open
     if (keyboardOpen) {
-      // Delay scroll to ensure the list has been updated with the new item
       const timer = setTimeout(() => {
-        if (flatListRef.current && todos.length > 0) {
+        if (flatListRef.current && todos.length > 0  && !editing) {
+          console.log('timer', editing)
           flatListRef.current.scrollToEnd({ animated: true });
         }
       }, 100); // Delay scroll by 100ms (adjust if needed)
@@ -82,16 +79,15 @@ const TodoList: React.FC = () => {
         clearTimeout(timer); // Clean up timeout when component unmounts or todos change
       };
     }
-  }, [todos, keyboardOpen]); // Trigger on `todos` change and when keyboardOpen state changes
+  }, [todos, keyboardOpen]);
 
   const renderTodoItem = ({ item }: { item: Todo }) => (
     <TodoItem item={item} />
   );
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{ flex: 1, marginBottom: Platform.OS === 'ios' ? tabBarHeight : 0 }}
+    <KeyboardAvoidingWrapper
+      disabled={false}
     >
       <View style={styles.container}>
         <Header onSync={syncTodosWithSupabase} />
@@ -105,7 +101,7 @@ const TodoList: React.FC = () => {
         />
         <InputField />
       </View>
-    </KeyboardAvoidingView>
+    </KeyboardAvoidingWrapper>
   );
 };
 
