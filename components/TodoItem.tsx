@@ -1,62 +1,83 @@
-import React, { useState } from 'react';
-import { TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { TouchableOpacity, Modal, Button } from 'react-native';
 import { TextInput, View, Text } from '@/components/Themed';
 import { Ionicons } from '@expo/vector-icons';
 import { useTodos } from '@/hooks/useTodos';
 import { todoItemStyles as styles } from '@/components/styles/TodoItemStyles';
 import { Todo } from '@/components/types/todoTypes';
+import { isEditingState } from '@/recoil/atoms';
+import { useRecoilState } from 'recoil';
 
 interface TodoItemProps {
   item: Todo;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({ item }) => {
-  // If the item is deleted, return null to render nothing
   if (item.deleted) {
     return null;
   }
 
   const { deleteTodo, updateTodo } = useTodos();
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useRecoilState(isEditingState);
   const [editedTitle, setEditedTitle] = useState(item.title);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const handleEdit = () => {
-    if (isEditing && editedTitle !== item.title) {
-      // Update todo item if title has changed
+  const openModal = () => {
+    setIsEditing(true); // Set isEditing to true
+    setModalVisible(true); // Open the modal
+  };
+
+  const closeModal = () => {
+    setIsEditing(false);
+    setModalVisible(false); // Close the modal
+  };
+
+  const handleSave = () => {
+    if (editedTitle !== item.title) {
       updateTodo(item.id, { title: editedTitle });
     }
-    setIsEditing(!isEditing); // Toggle edit mode
+    closeModal(); // Close modal after saving
   };
 
   return (
     <View style={styles.todoItem}>
-      {isEditing ? (
-        <TextInput
-          style={[styles.todoTitleInput, { flex: 1 }]} // Allow input to fill the container
-          value={editedTitle}
-          onChangeText={setEditedTitle}
-          autoFocus
-          onBlur={handleEdit} // When the input loses focus, save the changes
-        />
-      ) : (
-        <View style={{ flex: 1 }}>
-          <Text numberOfLines={1} ellipsizeMode="tail">{item.title}</Text>
-        </View>
-      )}
+      <View style={{ flex: 1 }}>
+        <Text numberOfLines={1} ellipsizeMode="tail">{item.title}</Text>
+      </View>
 
       <View style={styles.actionButtons}>
         <TouchableOpacity onPress={() => deleteTodo(item.id)} style={styles.iconButton}>
           <Ionicons name="trash-outline" size={24} color="#FF6347" />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleEdit} style={styles.iconButton}>
-          <Ionicons
-            name={isEditing ? "checkmark-outline" : "create-outline"}
-            size={24}
-            color={isEditing ? "#4CAF50" : "orange"}
-          />
+        <TouchableOpacity onPress={openModal} style={styles.iconButton}>
+          <Ionicons name="create-outline" size={24} color="orange" />
         </TouchableOpacity>
       </View>
+
+      {/* Modal for editing the todo title */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Edit Todo</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={editedTitle}
+              onChangeText={setEditedTitle}
+              autoFocus
+            />
+            <View style={styles.modalButtons}>
+              <Button title="Cancel" onPress={closeModal} color="#FF6347" />
+              <Button title="Save" onPress={handleSave} color="#4CAF50" />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

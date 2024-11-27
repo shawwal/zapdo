@@ -75,3 +75,7 @@ export const loadingState = atom<boolean>({
   default: false,
 });
 
+export const isEditingState = atom<boolean>({
+  key: 'isEditingState', // Unique key for the atom
+  default: false, // Default state is not editing
+});
