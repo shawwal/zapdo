@@ -33,7 +33,7 @@ const AppVersionComponent: React.FC = () => {
 
   return (
     <TouchableOpacity onLongPress={handleLongPress}>
-      <Text style={styles.appVersion}>App Version: 0.4</Text>
+      <Text style={styles.appVersion}>App Version: 0.5</Text>
     </TouchableOpacity>
   );
 };
