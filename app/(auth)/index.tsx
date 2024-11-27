@@ -78,7 +78,7 @@ export default function LoginScreen() {
         <View style={styles.wrapper}>
           <Image
             style={styles.tinyLogo}
-            source={require('@/assets/images/logo-z.png')}
+            source={require('@/assets/images/logo.png')}
           />
           <LoginForm />
 
